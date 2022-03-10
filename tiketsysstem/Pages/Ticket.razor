@@ -1,0 +1,90 @@
+﻿@page "/Ticket"
+@using tiketsysstem.Data;
+@inject TiketService ticketservice
+
+<h3>Ticket Liest</h3>
+<a class="btn btn-secondary  float-right" href="Createticket">Crate Ticket</a>
+@if (allTickets == null || allTickets.Count < 1)
+{
+    <div class="center">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+}
+else
+{
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Finish
+                </th>
+                <th>
+                    user ID
+                </th>
+                <th>
+                    Ticket Name
+                </th>
+                <th>
+                    Ticket ID
+                </th>
+                <th>
+                    Crate Data
+                </th>
+                <th>
+                    Optionen
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in allTickets)
+            {
+                <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" id="@item.ticketid" type="checkbox">
+                            <label for="@item.ticketid"></label>
+                        </div>
+                    </td>
+                    <td>
+                        @item.userid
+                    </td>
+                    <td>
+                        @item.ticketname
+                    </td>
+                    <td>
+                        @item.ticketid
+                    </td>
+                    <td>
+                        @item.Creadtedata
+                    </td>
+                    <td>
+                       <a   class="btn btn-warning" >Edit</a>
+                       <a  class="btn btn-danger" >Delite</a>
+                       <a  class="btn btn-info" >Info</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    List<Tiket> allTickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        allTickets = await ticketservice.GetAlltikets();
+    }
+
+}

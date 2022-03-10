@@ -1,0 +1,56 @@
+﻿@page "/Createticket"
+@using tiketsysstem.Data;
+@inject TiketService ticketservice
+@inject NavigationManager navi
+
+<h3>Create Ticket</h3>
+<form>
+    <div class="row  form-floating">
+            <input type="text" class="form-control" id="tiscketname" @bind="@newticket.ticketname"/>
+            <label for="tiscketname">Name</label>
+    </div>
+    <div class="row form-floating mt-1">
+            <textarea class="form-control " style="height:500px;" @bind="@newticket.Discription"></textarea>
+            <label for="tiscketname">Beschreibung</label>
+        
+    </div>
+     <div class="row form-floating mt-1">
+            <textarea class="form-control" style="height:5%;" @bind="@newticket.Note"></textarea>
+            <label for="tiscketname">Note</label>
+        
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="form-group">
+                <button type="button" class="btn btn-success" @onclick="@creadteTicket">Save</button>
+                <button type="button" class="btn btn-danger"  @onclick="@Cancel">Canel</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@code {
+    Tiket newticket = new();
+
+    protected async void creadteTicket()
+    {
+        if (newticket.ticketname == null || newticket.ticketname == "" || newticket.Discription == null || newticket.Discription == "")
+        {
+            
+        }
+        else {
+                    newticket.Creadtedata = DateTime.Now;
+                    newticket.userid = 0;
+                    newticket.finish = false;
+                    //später der nagemeldet nuttzer
+                    await ticketservice.Insertiket(newticket);
+                    navi.NavigateTo("/Ticket");
+                }
+    }
+    void Cancel()
+    {
+         navi.NavigateTo("/Ticket");
+    }
+}
