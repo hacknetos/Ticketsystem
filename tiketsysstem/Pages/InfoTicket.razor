@@ -1,0 +1,60 @@
+﻿@page "/InfoTicket/{id}"
+@using tiketsysstem.Data;
+@inject TiketService ticketservice
+@inject NavigationManager navi
+<h3>Info Ticket</h3>
+<form>
+    <div class="row form-group">
+        <div class="col ">
+            <label for="ID">ID</label>
+            <input class="form-control" id="ID" @bind="@ticket.ticketid" readonly/>
+            </div>
+            <div class="col ">
+            <label for="Name">Ticket Name</label>
+            <input  class="form-control" id="Name" @bind="@ticket.ticketname" readonly/>
+        </div>  
+        <div class="col">
+             <label for="Data">Creation Data</label>
+             <input  class="form-control" id="Data" @bind="@ticket.Creadtedata" readonly/>
+        </div>
+     </div>
+     <div class="row form-group mt-2">
+         <div class="col-8">
+             <label for="Discripton">Description</label>
+             <textarea class="form-control" id="Discripton" @bind="@ticket.Discription" readonly></textarea>
+         </div>
+          <div class="col-4">
+             <label for="Note">Note</label>
+             <textarea class="form-control" id="Note" @bind="@ticket.Note" readonly></textarea>
+         </div>
+     </div>
+     <div class="row form-group mt-2">
+         <div class="col-8">
+             <button type="button" @onclick="Back" class="btn btn-success">Back</button>
+               <a class="btn btn-warning" href="EditTicket/@ticket.ticketid">Edit</a>
+                
+         </div>
+         <div class="col-4 align-self-end">
+         <a class="btn btn-danger" href="DelTicket/@ticket.ticketid">Delite</a>
+         </div>
+     </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public String id { get; set; }
+    Tiket ticket = new();
+
+     protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ticket = await ticketservice.Getonetikets(Convert.ToInt32(id));
+    }
+
+
+    void Back()
+    {
+         navi.NavigateTo("/Ticket");
+    }
+}

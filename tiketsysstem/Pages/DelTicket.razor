@@ -1,0 +1,42 @@
+﻿@page "/DelTicket/{id}"
+@using tiketsysstem.Data;
+@inject TiketService ticketservice
+@inject NavigationManager navi
+<h3>Wollern sie Wirlklich das Ticket: @ticket.ticketname mit der ID: @ticket.ticketid Löschen Wollen</h3>
+<hr />
+<form>
+    <button type="button" @onclick="Delite" class="btn btn-danger">
+        Delite
+    </button>
+    <button type="button" @onclick="Cancel" class="btn btn-info">
+        Cancel
+    </button>
+
+
+</form>
+
+
+@code {
+    [Parameter]
+    public String id { get; set; }
+    Tiket ticket = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ticket = await ticketservice.Getonetikets(Convert.ToInt32(id));
+    }
+
+    async void Delite()
+    {
+        await ticketservice.Delitetiket(ticket);
+         navi.NavigateTo("/Ticket");
+    }
+
+
+    void Cancel()
+    {
+         navi.NavigateTo("/Ticket");
+         
+    }
+}

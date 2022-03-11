@@ -1,0 +1,63 @@
+﻿@page "/EditTicket/{id}"
+@using tiketsysstem.Data;
+@inject TiketService ticketservice
+@inject NavigationManager navi
+
+<h3>Edit Ticket</h3>
+
+<form>
+    <div class="row  form-floating">
+        <input class="form-control" type="text" id="ID" @bind="@ticket.ticketid" readonly>
+        <label for="ID">ID</label>
+    </div>
+    <div class="row  form-floating  mt-1">
+            <input type="text" class="form-control" id="tiscketname" @bind="@ticket.ticketname"/>
+            <label for="tiscketname">Name</label>
+    </div>
+    <div class="row form-floating mt-1">
+            <textarea class="form-control " style="height:500px;" @bind="@ticket.Discription"></textarea>
+            <label for="tiscketname">Beschreibung</label>
+        
+    </div>
+     <div class="row form-floating mt-1">
+            <textarea class="form-control" style="height:5%;" @bind="@ticket.Note"></textarea>
+            <label for="tiscketname">Note</label>
+        
+    </div>
+
+    <div class="row mt-2">
+        <div class="col">
+            <div class="form-group">
+                <button type="button" class="btn btn-success col-md-1" @onclick="@saveticket">Save</button>
+                <button type="button" class="btn btn-danger col-md-1"  @onclick="@Cancel">Canel</button>
+                <a  class="btn btn-secondary col-md-1 offset-md-8 " href="DelTicket/@id">Delite</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    Tiket ticket = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        ticket = await ticketservice.Getonetikets(Convert.ToInt32(id));
+    }
+
+    protected async void saveticket()
+    {
+        await ticketservice.Updatetiket(ticket);
+        navi.NavigateTo("/Ticket");
+    }
+
+
+    void Cancel()
+    {
+         navi.NavigateTo("/Ticket");
+         
+    }
+}
