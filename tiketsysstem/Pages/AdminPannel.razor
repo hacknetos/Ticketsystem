@@ -1,0 +1,24 @@
+﻿@page "/adminpanel"
+@using tiketsysstem.Data;
+@inject TiketService ticketservice
+
+
+
+<AuthorizeView Roles="Admin">
+    <NotAuthorized>
+        <h1 class="text-xxl-center">you cannot pass</h1>
+       <h5  class="text-xxl-center">>But you can look PEPE Gandald</h5>
+        
+    </NotAuthorized>
+    <Authorized>
+        <h5>Admin Panel</h5>
+        @*Später noch mehr *@
+    </Authorized>
+
+</AuthorizeView>
+
+
+
+@code {
+
+}

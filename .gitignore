@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# ignore diracory 
+C:/Users/rosenbar/source/repos/tiketsysstem/tiketsysstem\Media/*
+
 # User-specific files
 *.rsuser
 *.suo
@@ -361,3 +364,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/tiketsysstem/Media/Gandalfpepe 3.jpg
+/tiketsysstem/Media/Gandalf pepe 2.jpg
+/tiketsysstem/Media/pepe-gandalf-wizard.gif
