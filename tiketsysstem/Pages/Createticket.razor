@@ -1,10 +1,18 @@
 ﻿@page "/Createticket"
 @using tiketsysstem.Data;
+@using Microsoft.AspNetCore.Identity;
+
 @inject TiketService ticketservice
 @inject NavigationManager navi
 
 <h3>Create Ticket</h3>
+<AuthorizeView>
 <form>
+    <div class="row  form-floating">
+            <input type="text" class="form-control disabled" id="tiscketid" @bind="newticket.ticketid" >
+            
+            <label for="tiscketid">id</label>
+    </div>
     <div class="row  form-floating">
             <input type="text" class="form-control" id="tiscketname" @bind="@newticket.ticketname"/>
             <label for="tiscketname">Name</label>
@@ -29,7 +37,7 @@
         </div>
     </div>
 </form>
-
+</AuthorizeView>
 
 @code {
     Tiket newticket = new();
@@ -38,12 +46,14 @@
     {
         if (newticket.ticketname == null || newticket.ticketname == "" || newticket.Discription == null || newticket.Discription == "")
         {
-            
+
         }
         else {
-                    newticket.Creadtedata = DateTime.Now;
-                    newticket.userid = 0;
-                    newticket.finish = false;
+
+
+            newticket.Creadtedata = DateTime.Now;
+            
+            newticket.finish = false;
                     //später der nagemeldet nuttzer
                     await ticketservice.Insertiket(newticket);
                     navi.NavigateTo("/Ticket");
@@ -53,4 +63,6 @@
     {
          navi.NavigateTo("/Ticket");
     }
+   
+
 }

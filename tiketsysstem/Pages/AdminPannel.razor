@@ -1,24 +1,243 @@
 ﻿@page "/adminpanel"
 @using tiketsysstem.Data;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@using System.Linq;
+@inject UserManager<IdentityUser> _UserManager
+@inject RoleManager<IdentityRole> _RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject TiketService ticketservice
+
 
 
 
 <AuthorizeView Roles="Admin">
     <NotAuthorized>
         <h1 class="text-xxl-center">you cannot pass</h1>
-       <h5  class="text-xxl-center">>But you can look PEPE Gandald</h5>
-        
+       <h5  class="text-xxl-center">But you can look memes</h5>
+        <a href="https://www.reddit.com/" class="alert alert-info row ">Reddit</a>
     </NotAuthorized>
     <Authorized>
         <h5>Admin Panel</h5>
-        @*Später noch mehr *@
+        <hr/>
+        <div class="border-warning border">
+            <table class="table table-hover table-active">
+                <thead>
+                    <tr>
+                        <th>
+                            User ID
+                        </th>
+                        <th>
+                            User Name
+                        </th>
+                         <th>
+                            User Email
+                        </th>
+                        <th>
+                            User Roll
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                   @foreach (var user in ColUsers)
+                  {
+                      <tr>
+                            <td>@user.Id.Substring(0, 5) ...</td>
+                            <td>@user.UserName.Split('@')[0]</td>
+                            <td>@user.Email</td>
+                            <td>
+                                @{
+                                    a = Task.Run(() => getRols(user)).GetAwaiter().GetResult();}
+                                    @foreach(var b in a)
+                                    {
+                                        @b
+                                    }
+                                
+                            </td>
+                        </tr>
+                  }
+                </tbody>
+            </table>
+        </div>
+        <hr />
+         <div class="border-warning border">
+             <table class="table table-active table-hover">
+                 <thead>
+                     <tr>
+                         <th>
+                             Roll ID
+                         </th>
+                         <th>
+                             Roll Name
+                         </th>
+                         <th>
+                             users
+                         </th>
+                         <th>
+                             Options
+                         </th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     @foreach (var role in Colrole)
+                    {
+                        <tr>
+                            <td>
+                                @role.Id.Substring(0, 5) ...
+                            </td>
+                            <td>
+                                @role.Name
+                            </td>
+                            <td>
+                              
+                              
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                    }
+                 </tbody>
+             </table>
+             </div>
+             <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Finish
+                </th>
+                <th>
+                    user ID
+                </th>
+                <th>
+                    Ticket Name
+                </th>
+                <th>
+                    Ticket ID
+                </th>
+                <th>
+                    Crate Data
+                </th>
+                <th>
+                    Optionen
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+                    @if (allTickets != null && allTickets.Count > 0 )
+                    {
+                        @foreach (var item in allTickets)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" id="@item.ticketid" type="checkbox">
+                                        <label for="@item.ticketid"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    @item.userid
+                                </td>
+                                <td>
+                                    @item.ticketname
+                                </td>
+                                <td>
+                                    @item.ticketid
+                                </td>
+                                <td>
+                                    @item.Creadtedata
+                                </td>
+                                <td>
+                                    <a  class="btn btn-sm btn-warning" href="EditTicket/@item.ticketid">Edit</a>
+                                    <a  class="btn btn-sm btn-danger" href="DelTicket/@item.ticketid">Delite</a>
+                                    <a  class="btn btn-sm btn-info"  href="InfoTicket/@item.ticketid">Info</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+        </tbody>
+    </table>
+        
+
+
+       
+       
     </Authorized>
 
 </AuthorizeView>
 
+@code{
+     List<Tiket> allTickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+         GetUsers();
+        GetRols();
+        await base.OnInitializedAsync();
+        
+        allTickets = await ticketservice.GetAlltikets();
+    }
+    IdentityUser objUser = new IdentityUser();
+    string CurrentUserRole { get; set; } = "Users";
+    List<IdentityUser> ColUsers = new List<IdentityUser>();
+    List<IdentityRole> Colrole = new List<IdentityRole>();
+    IList<String> a;
+    IList<IdentityUser> c;
+
+   
 
 
-@code {
+    public void GetUsers()
+    {
+
+        ColUsers = new List<IdentityUser>();
+        var user = _UserManager.Users.Select(x => new IdentityUser
+            {
+                Id = x.Id,
+
+                UserName = x.UserName,
+
+                Email = x.Email,
+
+
+
+
+    });
+
+
+        foreach (var item in user)
+        {
+            ColUsers.Add(item);
+        }
+
+    }
+    public void GetRols()
+    {
+        Colrole = new List<IdentityRole>();
+        var role = _RoleManager.Roles.Select(x => new IdentityRole
+            {
+                Id = x.Id,
+                Name = x.Name
+            });
+        foreach (var item in role)
+        {
+            Colrole.Add(item);
+        }
+
+
+
+    }
+    public async Task<IList<String>> getRols(dynamic user) {
+
+        return await _UserManager.GetRolesAsync(user);
+
+    }
+    public async Task<IList<IdentityUser>> getUser(String role) {
+
+        return await _UserManager.GetUsersInRoleAsync(role);
+    }
+    //TODO users in Rollen ausgeben 
+    //TODO suchefunktion einbauen 
+    //TODO ansciht der Elemente Begrenzen 
 
 }

@@ -14,7 +14,7 @@ namespace tiketsysstem.Data
         public bool finish { get; set; }
         public string Note { get; set; }
         [Required]
-        public int userid { get; set; }
+        public string userid { get; set; }
         public DateTime Creadtedata { get; set; }
     }
 }
